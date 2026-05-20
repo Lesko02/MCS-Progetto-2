@@ -34,7 +34,7 @@ def time_call(func, A, repeats=1):
     """Esegue func(A) e restituisce il tempo medio in secondi su `repeats`
     chiamate. Tutte le dimensioni considerate vengono testate sulla stessa
     matrice."""
-    # warm-up (la prima chiamata di scipy puo' includere overhead di import)
+
     func(A)
     best = np.inf
     for _ in range(repeats):
@@ -71,7 +71,7 @@ def main():
         print(f"{N:>6} | {t_custom:>12.4e} | {t_scipy:>12.4e} | "
               f"{t_custom / t_scipy:>9.1f}x")
 
-    # ----- Salvataggio CSV -----
+    # Salvataggio CSV
     with open('Results/times.csv', 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['N', 'time_custom_s', 'time_scipy_s'])
@@ -81,7 +81,7 @@ def main():
                         times_custom.get(N, ''),
                         times_scipy.get(N, '')])
 
-    # ----- Grafico semilog-y (solo ordinate in log) -----
+    # Grafico semilog-y (solo ordinate in log)
     Ns_c = sorted(times_custom.keys())
     Ns_s = sorted(times_scipy.keys())
     Tc = np.array([times_custom[N] for N in Ns_c])
