@@ -46,11 +46,8 @@ def time_call(func, A, repeats=1):
 
 
 def main():
-    # Dimensioni N crescenti. Per la DCT2 fatta in casa il costo e' O(N^3),
-    # quindi non si va oltre qualche centinaio se vogliamo tempi ragionevoli.
-    sizes_custom = [8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 320, 384, 448, 512] + [768, 1024, 1536, 2048]
-    # scipy e' ordini di grandezza piu' veloce: arriviamo piu' in alto.
-    sizes_scipy  = sizes_custom + [768, 1024, 1536, 2048]
+    # Dimensioni N crescenti.
+    sizes = [8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 320, 384, 448, 512, 768, 1024, 1536, 2048]
 
     rng = np.random.default_rng(0)
 
@@ -65,24 +62,14 @@ def main():
     times_custom = {}
     times_scipy  = {}
 
-    # Prima eseguiamo il custom solo per i sizes_custom...
-    for N in sizes_custom:
+    for N in sizes:
         A = rng.standard_normal((N, N))
         t_custom = time_call(dct2_custom, A, repeats=repeats_custom)
-        t_scipy  = time_call(dct2_scipy,  A, repeats=repeats_scipy)
+        t_scipy  = time_call(dct2_scipy, A, repeats=repeats_scipy)
         times_custom[N] = t_custom
         times_scipy[N]  = t_scipy
         print(f"{N:>6} | {t_custom:>12.4e} | {t_scipy:>12.4e} | "
               f"{t_custom / t_scipy:>9.1f}x")
-
-    # ...e poi proseguiamo con scipy soltanto sui sizes piu' grandi
-    for N in sizes_scipy:
-        if N in times_scipy:
-            continue
-        A = rng.standard_normal((N, N))
-        t_scipy = time_call(dct2_scipy, A, repeats=repeats_scipy)
-        times_scipy[N] = t_scipy
-        print(f"{N:>6} | {'-- skip --':>12} | {t_scipy:>12.4e} | {'--':>9}")
 
     # ----- Salvataggio CSV -----
     with open('Results/times.csv', 'w', newline='') as f:
@@ -101,7 +88,6 @@ def main():
     Ts = np.array([times_scipy[N]  for N in Ns_s])
 
     # rette di riferimento N^3 e N^2 log(N) calibrate su un punto centrale
-    # (per esibire l'andamento asintotico evitando l'overhead per N piccoli)
     Ns_c_arr = np.array(Ns_c, dtype=float)
     Ns_s_arr = np.array(Ns_s, dtype=float)
     ic = len(Ns_c) // 2          # punto di calibrazione per la curva custom
