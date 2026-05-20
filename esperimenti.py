@@ -26,9 +26,10 @@ def coeffs_kept(F, d):
     return int(np.sum((k + l) < d))
 
 
-def run_experiment(name, img, configs, outdir='Results'):
+def run_experiment(name, img, configs, plot_dir='Plots', csv_dir='Results'):
     """Esegue la compressione per tutte le configurazioni e salva output e metriche."""
-    os.makedirs(outdir, exist_ok=True)
+    os.makedirs(plot_dir, exist_ok=True)
+    os.makedirs(csv_dir, exist_ok=True)
     H, W = img.shape
 
     rows = []
@@ -65,20 +66,20 @@ def run_experiment(name, img, configs, outdir='Results'):
     # Salvataggio immagine
     plt.suptitle(f"Analisi Compressione: {name}", fontsize=14, fontweight='bold', y=1.02)
     plt.tight_layout()
-    fig_path = os.path.join(outdir, f"plot_{name}.png")
+    fig_path = os.path.join(plot_dir, f"plot_{name}.png")
     plt.savefig(fig_path, dpi=130, bbox_inches='tight')
     plt.close(fig)
 
     # Salvataggio CSV
-    csv_path = os.path.join(outdir, f"dati_{name}.csv")
+    csv_path = os.path.join(csv_dir, f"dati_{name}.csv")
     with open(csv_path, 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['F', 'd', 'coeff_tenuti', 'coeff_totali', 'frazione_tenuti', 'MSE', 'PSNR_dB'])
         w.writerows(rows)
 
     # Output in console
-    print(f" -> Salvato plot: {fig_path}")
-    print(f" -> Salvato CSV:  {csv_path}")
+    print(f"Salvato plot: {fig_path}")
+    print(f"Salvato CSV:  {csv_path}")
     for F, d, kept, tot, frac, mse, psnr in rows:
         print(f"    F={F:>3} d={d:>3} | coeff={kept:>4}/{tot:<4} "
               f"({100*frac:>5.1f}%) | MSE={mse:>7.2f} | PSNR={psnr:>5.2f} dB")
@@ -86,7 +87,8 @@ def run_experiment(name, img, configs, outdir='Results'):
 
 def main():
     img_dir = "Immagini"
-    out_dir = "Results"
+    plot_dir = "Plots"
+    csv_dir = "Results"
     
     # Check esistenza cartella
     if not os.path.exists(img_dir):
@@ -117,15 +119,12 @@ def main():
         img_path = os.path.join(img_dir, filename)
         name = os.path.splitext(filename)[0]
         
-        print(f"\n[Analisi in corso] Immagine: {filename}")
+        print(f"\nImmagine: {filename}")
         try:
             img = load_bmp_grayscale(img_path)
-            run_experiment(name, img, configs, outdir=out_dir)
+            run_experiment(name, img, configs, plot_dir=plot_dir, csv_dir=csv_dir)
         except Exception as e:
             print(f" ERRORE nell'elaborazione di {filename}: {e}")
-
-    print("\n" + "-"*50 + "\nEsperimenti conclusi con successo.")
-
 
 if __name__ == '__main__':
     main()
