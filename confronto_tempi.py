@@ -1,16 +1,16 @@
 """
-PARTE 1 - Confronto dei tempi di esecuzione DCT2 'fatta in casa' vs DCT2
+PARTE 1 - Confronto dei tempi di esecuzione DCT2 vs DCT2
 della libreria (scipy.fft.dct, basata su FFT).
 
 Si attendono tempi proporzionali a:
-    - N^3        per la DCT2 'fatta in casa' (algoritmo matriciale)
+    - N^3        per la DCT2 (algoritmo matriciale)
     - N^2 log N  per la versione fast (FFT)
 
 Output:
     - stampa di una tabella con i tempi
     - grafico in scala semilogaritmica (solo ordinate)
-    - salvataggio dei dati in 'parte1_times.csv'
-    - salvataggio del grafico in 'parte1_times.png'
+    - salvataggio dei dati in 'times.csv'
+    - salvataggio del grafico in 'times.png'
 """
 
 import time
@@ -22,12 +22,9 @@ from scipy.fft import dct
 
 from dct_custom import dct_2D as dct2_custom
 
-
-# ---------------------------------------------------------------------------
 # DCT2 della libreria: scipy.fft.dct e' la versione FFT-based.
 # Per la 2D applichiamo la dct prima per colonne (axis=0) e poi per righe
-# (axis=1) usando norm='ortho' (stessa convenzione di scaling del prof).
-# ---------------------------------------------------------------------------
+# (axis=1) usando norm='ortho'.
 def dct2_scipy(A):
     return dct(dct(A, type=2, norm='ortho', axis=0),
                type=2, norm='ortho', axis=1)
@@ -88,7 +85,7 @@ def main():
         print(f"{N:>6} | {'-- skip --':>12} | {t_scipy:>12.4e} | {'--':>9}")
 
     # ----- Salvataggio CSV -----
-    with open('Results/parte1_times.csv', 'w', newline='') as f:
+    with open('Results/times.csv', 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['N', 'time_custom_s', 'time_scipy_s'])
         all_N = sorted(set(times_custom.keys()) | set(times_scipy.keys()))
@@ -128,9 +125,9 @@ def main():
     plt.grid(True, which='both', linestyle=':', alpha=0.55)
     plt.legend(loc='upper left')
     plt.tight_layout()
-    plt.savefig('Plots/parte1_times.png', dpi=140)
-    print("\nGrafico salvato in 'parte1_times.png'")
-    print("Dati salvati  in 'parte1_times.csv'")
+    plt.savefig('Plots/times.png', dpi=140)
+    print("\nGrafico salvato in 'times.png'")
+    print("Dati salvati  in 'times.csv'")
 
 
 if __name__ == '__main__':

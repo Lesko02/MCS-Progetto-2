@@ -1,22 +1,15 @@
 """
-DCT2 e IDCT2 "fatta in casa" 
+DCT2 e IDCT2
 
-Replica fedele dei codici MATLAB del professore (compute_D.m, dct_1D.m,
-dct_2D.m, idct_1D.m, idct_2D.m) in Python.
-
-Convenzione di scaling: DCT-II ortonormale (verificata sul caso test
-del docente):
+Convenzione di scaling: DCT-II ortonormale:
     alpha_0   = 1/sqrt(N)
     alpha_k   = sqrt(2/N)   per k > 0
 La matrice D e' ortogonale ==> IDCT = D^T (trasposta = inversa).
 """
-
 import numpy as np
 
 
-# -----------------------------------------------------------------------------
-# compute_D(N) -- corrisponde a compute_D.m
-# -----------------------------------------------------------------------------
+# Compute D
 def compute_D(N):
     """
     Costruisce la matrice D (N x N) della DCT-II ortonormale.
@@ -37,9 +30,7 @@ def compute_D(N):
     return D
 
 
-# -----------------------------------------------------------------------------
-# DCT 1D -- corrisponde a dct_1D.m
-# -----------------------------------------------------------------------------
+# DCT 1-dimensionale
 def dct_1D(f_vect):
     """DCT-II ortonormale di un vettore (fatta in casa: c = D * f)."""
     f_vect = np.asarray(f_vect, dtype=float).reshape(-1)
@@ -48,9 +39,7 @@ def dct_1D(f_vect):
     return D @ f_vect
 
 
-# -----------------------------------------------------------------------------
-# IDCT 1D -- corrisponde a idct_1D.m
-# -----------------------------------------------------------------------------
+# IDCT
 def idct_1D(c_vect):
     """IDCT-II ortonormale di un vettore (f = D^T * c)."""
     c_vect = np.asarray(c_vect, dtype=float).reshape(-1)
@@ -58,13 +47,10 @@ def idct_1D(c_vect):
     D = compute_D(N)
     return D.T @ c_vect
 
-
-# -----------------------------------------------------------------------------
-# DCT 2D -- corrisponde a dct_2D.m
-# -----------------------------------------------------------------------------
+# DCT 2-Dimensionale
 def dct_2D(f_mat):
     """
-    DCT2 "fatta in casa": prima per colonne, poi per righe (come nelle
+    DCT2: prima per colonne, poi per righe (come nelle
     note, Osservazione 7.2 e Figura 17).
     Costo: O(N^3).
     """
@@ -82,9 +68,7 @@ def dct_2D(f_mat):
     return c_mat
 
 
-# -----------------------------------------------------------------------------
-# IDCT 2D -- corrisponde a idct_2D.m
-# -----------------------------------------------------------------------------
+# IDCT 2-Dimensionale
 def idct_2D(c_mat):
     """IDCT2 'fatta in casa': D^T sulle colonne e poi sulle righe."""
     c_mat = np.asarray(c_mat, dtype=float)

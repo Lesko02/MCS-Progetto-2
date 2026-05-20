@@ -1,19 +1,12 @@
-"""
-Verifica dello scaling della DCT2 sui casi test forniti dal docente:
-
-  - la prima riga del blocco 8x8 deve dare la DCT 1D indicata;
-  - il blocco 8x8 completo deve dare la DCT2 indicata.
-"""
+# Benchmark per verificare che le funzioni rispettino la specifica data
 
 import numpy as np
-from scipy.fft import dct, idct
+from scipy.fft import dct
 
 from dct_custom import dct_1D, dct_2D, idct_2D
 
 
-# ---------------------------------------------------------------------------
-# Caso test 1: riga 1x8
-# ---------------------------------------------------------------------------
+# Test 1: riga 1x8
 row = np.array([231, 32, 233, 161, 24, 71, 140, 245], dtype=float)
 row_expected = np.array([4.01e+02, 6.60e+00, 1.09e+02, -1.12e+02,
                          6.54e+01, 1.21e+02, 1.16e+02, 2.88e+01])
@@ -28,9 +21,7 @@ print(f"Risultato Scipy ('ortho'): {np.array2string(c_row_scipy,   formatter={'f
 print(f"|custom - scipy| max = {np.max(np.abs(c_row_nostro - c_row_scipy)):.3e}")
 print(f"|custom - atteso| max = {np.max(np.abs(c_row_nostro - row_expected)):.3e}")
 
-# ---------------------------------------------------------------------------
-# Caso test 2: blocco 8x8
-# ---------------------------------------------------------------------------
+#Test 2: blocco 8x8
 block = np.array([
     [231,  32, 233, 161,  24,  71, 140, 245],
     [247,  40, 248, 245, 124, 204,  36, 107],

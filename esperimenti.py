@@ -1,10 +1,5 @@
-"""
-Esperimenti riproducibili (Parte 2) — elaborazione batch dalla cartella Immagini.
-
-Lo script legge tutti i file .bmp presenti nella cartella 'Immagini',
-applica diverse combinazioni di (F, d), e salva i risultati (grafici PNG
-e dati CSV) in una cartella di output 'risultati_esperimenti'.
-"""
+# Esperimenti riproducibili, esegue la compressione con varie soglie sull'intera
+# cartella di Immagini
 
 import os
 import csv
@@ -14,9 +9,7 @@ import matplotlib.pyplot as plt
 from compressione import compress_image, load_bmp_grayscale
 
 
-# ---------------------------------------------------------------------------
 # Metriche
-# ---------------------------------------------------------------------------
 def psnr_uint8(orig, comp):
     """Calcola il PSNR in dB e l'MSE tra due immagini."""
     diff = orig.astype(np.float64) - comp.astype(np.float64)
@@ -33,9 +26,6 @@ def coeffs_kept(F, d):
     return int(np.sum((k + l) < d))
 
 
-# ---------------------------------------------------------------------------
-# Motore dell'esperimento
-# ---------------------------------------------------------------------------
 def run_experiment(name, img, configs, outdir='Results'):
     """Esegue la compressione per tutte le configurazioni e salva output e metriche."""
     os.makedirs(outdir, exist_ok=True)
@@ -94,14 +84,11 @@ def run_experiment(name, img, configs, outdir='Results'):
               f"({100*frac:>5.1f}%) | MSE={mse:>7.2f} | PSNR={psnr:>5.2f} dB")
 
 
-# ---------------------------------------------------------------------------
-# Main Routine
-# ---------------------------------------------------------------------------
 def main():
     img_dir = "Immagini"
     out_dir = "Results"
     
-    # Controllo esistenza cartella
+    # Check esistenza cartella
     if not os.path.exists(img_dir):
         print(f"ERRORE: Impossibile trovare la cartella '{img_dir}'.")
         print("Assicurati che sia nella stessa directory di questo script.")
@@ -124,9 +111,8 @@ def main():
         print(f"Nessuna immagine .bmp trovata nella cartella '{img_dir}'.")
         return
 
-    print(f"Trovate {len(bmp_files)} immagini. Inizio esperimenti...\n" + "-"*50)
+    print(f"Trovate {len(bmp_files)} immagini. Inizio compressione:\n" + "-"*50)
 
-    # Esegue l'esperimento per ogni immagine
     for filename in bmp_files:
         img_path = os.path.join(img_dir, filename)
         name = os.path.splitext(filename)[0]
