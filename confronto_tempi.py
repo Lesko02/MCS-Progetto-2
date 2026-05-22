@@ -108,11 +108,11 @@ def main():
                  color='C3', markersize=6, linewidth=1.6)
     plt.semilogy(Ns_s, Ts,  's-', label='DCT2 libreria scipy.fft (FFT, O(N^2 log N))',
                  color='C0', markersize=6, linewidth=1.6)
-    plt.semilogy(Ns_c, ref_N3,  '--', color='C3', alpha=0.55, label='riferimento $\\sim N^3$')
-    plt.semilogy(Ns_s, ref_N2lg,'--', color='C0', alpha=0.55, label='riferimento $\\sim N^2 \\log N$')
+    plt.semilogy(Ns_c, ref_N3,  '--', color='C3', alpha=0.55, label='Riferimento $\\sim N^3$')
+    plt.semilogy(Ns_s, ref_N2lg,'--', color='C0', alpha=0.55, label='Riferimento $\\sim N^2 \\log N$')
 
     plt.xlabel('N  (lato della matrice quadrata)')
-    plt.ylabel('tempo di esecuzione [s]  (scala logaritmica)')
+    plt.ylabel('Tempo di esecuzione [s]  (scala logaritmica)')
     plt.title('Tempi di esecuzione DCT2: implementazione propria vs scipy.fft')
     plt.grid(True, which='both', linestyle=':', alpha=0.55)
     plt.legend(loc='upper left')
