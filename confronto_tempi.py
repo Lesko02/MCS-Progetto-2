@@ -15,11 +15,12 @@ Output:
 
 import time
 import csv
+import pathlib
 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import dct
-
+from pathlib import Path
 from dct_custom import dct_2D as dct2_custom
 
 # DCT2 della libreria: scipy.fft.dct e' la versione FFT-based.
@@ -71,6 +72,11 @@ def main():
         print(f"{N:>6} | {t_custom:>12.4e} | {t_scipy:>12.4e} | "
               f"{t_custom / t_scipy:>9.1f}x")
 
+    percorso_csv = Path('Results/times.csv')
+
+    # Crea la cartella 'Results' (e le eventuali cartelle padre) se non esiste
+    percorso_csv.parent.mkdir(parents=True, exist_ok=True)
+
     # Salvataggio CSV
     with open('Results/times.csv', 'w', newline='') as f:
         w = csv.writer(f)
@@ -98,7 +104,7 @@ def main():
                 (Ns_s[is_] ** 2 * np.log(Ns_s[is_])))
 
     plt.figure(figsize=(9, 6))
-    plt.semilogy(Ns_c, Tc,  'o-', label='DCT2 fatta in casa (matriciale, O(N^3))',
+    plt.semilogy(Ns_c, Tc,  'o-', label='DCT2 propria (matriciale, O(N^3))',
                  color='C3', markersize=6, linewidth=1.6)
     plt.semilogy(Ns_s, Ts,  's-', label='DCT2 libreria scipy.fft (FFT, O(N^2 log N))',
                  color='C0', markersize=6, linewidth=1.6)
@@ -107,12 +113,16 @@ def main():
 
     plt.xlabel('N  (lato della matrice quadrata)')
     plt.ylabel('tempo di esecuzione [s]  (scala logaritmica)')
-    plt.title('Parte 1 — Tempi di esecuzione DCT2: implementazione propria vs scipy.fft')
+    plt.title('Tempi di esecuzione DCT2: implementazione propria vs scipy.fft')
     plt.grid(True, which='both', linestyle=':', alpha=0.55)
     plt.legend(loc='upper left')
     plt.tight_layout()
-    plt.savefig('Plots/times.png', dpi=140)
-    print("\nGrafico salvato in 'times.png'")
+    # Creazione sicura della cartella e salvataggio
+    percorso_plot = Path('Plots/times.png')
+    percorso_plot.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(percorso_plot, dpi=140)
+
+    print(f"\nGrafico salvato in '{percorso_plot}'")
     print("Dati salvati  in 'times.csv'")
 
 
