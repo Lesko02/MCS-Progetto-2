@@ -74,7 +74,7 @@ class DCTApp(tk.Tk):
                                   command=self._on_F_change)
         self.F_spin.grid(row=0, column=1, sticky='w', **pad)
 
-        ttk.Label(params, text="d  (soglia di taglio, 0 ≤ d ≤ 2F−2):").grid(
+        ttk.Label(params, text="d  (soglia di taglio, 0 ≤ d ≤ 2F-2):").grid(
             row=0, column=2, sticky='w', **pad)
         self.d_spin = ttk.Spinbox(params, from_=0, to=14, width=6,
                                   textvariable=self.d_var)
