@@ -1,12 +1,8 @@
-# Benchmark per verificare che le funzioni rispettino la specifica data
-
 import numpy as np
 from scipy.fft import dct
 
 from dct_custom import dct_1D, dct_2D, idct_2D
 
-
-# Test 1: riga 1x8
 row = np.array([231, 32, 233, 161, 24, 71, 140, 245], dtype=float)
 row_expected = np.array([4.01e+02, 6.60e+00, 1.09e+02, -1.12e+02,
                          6.54e+01, 1.21e+02, 1.16e+02, 2.88e+01])
@@ -21,7 +17,6 @@ print(f"Risultato Scipy ('ortho'): {np.array2string(c_row_scipy,   formatter={'f
 print(f"|custom - scipy| max = {np.max(np.abs(c_row_nostro - c_row_scipy)):.3e}")
 print(f"|custom - atteso| max = {np.max(np.abs(c_row_nostro - row_expected)):.3e}")
 
-#Test 2: blocco 8x8
 block = np.array([
     [231,  32, 233, 161,  24,  71, 140, 245],
     [247,  40, 248, 245, 124, 204,  36, 107],
@@ -45,7 +40,7 @@ block_expected = np.array([
 ])
 
 c_nostro = dct_2D(block)
-# DCT2 con scipy: prima sulle righe (axis=1) poi sulle colonne (axis=0), norm='ortho'
+
 c_scipy = dct(dct(block, type=2, norm='ortho', axis=0),
               type=2, norm='ortho', axis=1)
 
@@ -59,6 +54,5 @@ print(f"\n|custom - scipy|  max = {np.max(np.abs(c_nostro - c_scipy)):.3e}")
 print(f"|custom - atteso| max = "
       f"{np.max(np.abs(c_nostro - block_expected)):.3e}")
 
-# Verifica IDCT2 (round-trip)
 back = idct_2D(c_nostro)
 print(f"\n|idct_2D(dct_2D(block)) - block| max = {np.max(np.abs(back - block)):.3e}")

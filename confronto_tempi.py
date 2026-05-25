@@ -1,21 +1,5 @@
-"""
-PARTE 1 - Confronto dei tempi di esecuzione DCT2 vs DCT2
-della libreria (scipy.fft.dct, basata su FFT).
-
-Si attendono tempi proporzionali a:
-    - N^3        per la DCT2 (algoritmo matriciale)
-    - N^2 log N  per la versione fast (FFT)
-
-Output:
-    - stampa di una tabella con i tempi
-    - grafico in scala semilogaritmica (solo ordinate)
-    - salvataggio dei dati in 'times.csv'
-    - salvataggio del grafico in 'times.png'
-"""
-
 import time
 import csv
-import pathlib
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,9 +7,6 @@ from scipy.fft import dct
 from pathlib import Path
 from dct_custom import dct_2D as dct2_custom
 
-# DCT2 della libreria: scipy.fft.dct e' la versione FFT-based.
-# Per la 2D applichiamo la dct prima per colonne (axis=0) e poi per righe
-# (axis=1) usando norm='ortho'.
 def dct2_scipy(A):
     return dct(dct(A, type=2, norm='ortho', axis=0),
                type=2, norm='ortho', axis=1)
@@ -47,12 +28,10 @@ def time_call(func, A, repeats=1):
 
 
 def main():
-    # Dimensioni N crescenti.
     sizes = [8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 320, 384, 448, 512, 768, 1024, 1536, 2048]
 
     rng = np.random.default_rng(0)
 
-    # repeats: poche per il custom (e' lento), piu' per scipy (sub-ms)
     repeats_custom = 5
     repeats_scipy  = 10
 
@@ -74,10 +53,8 @@ def main():
 
     percorso_csv = Path('Results/times.csv')
 
-    # Crea la cartella 'Results' (e le eventuali cartelle padre) se non esiste
     percorso_csv.parent.mkdir(parents=True, exist_ok=True)
 
-    # Salvataggio CSV
     with open('Results/times.csv', 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['N', 'time_custom_s', 'time_scipy_s'])
@@ -87,17 +64,15 @@ def main():
                         times_custom.get(N, ''),
                         times_scipy.get(N, '')])
 
-    # Grafico semilog-y (solo ordinate in log)
     Ns_c = sorted(times_custom.keys())
     Ns_s = sorted(times_scipy.keys())
     Tc = np.array([times_custom[N] for N in Ns_c])
     Ts = np.array([times_scipy[N]  for N in Ns_s])
 
-    # rette di riferimento N^3 e N^2 log(N) calibrate su un punto centrale
     Ns_c_arr = np.array(Ns_c, dtype=float)
     Ns_s_arr = np.array(Ns_s, dtype=float)
-    ic = len(Ns_c) // 2          # punto di calibrazione per la curva custom
-    is_ = len(Ns_s) // 2         # punto di calibrazione per scipy
+    ic = len(Ns_c) // 2
+    is_ = len(Ns_s) // 2         
     ref_N3   = Tc[ic] * (Ns_c_arr / Ns_c[ic]) ** 3
     ref_N2lg = (Ts[is_] *
                 (Ns_s_arr ** 2 * np.log(Ns_s_arr)) /
@@ -117,7 +92,7 @@ def main():
     plt.grid(True, which='both', linestyle=':', alpha=0.55)
     plt.legend(loc='upper left')
     plt.tight_layout()
-    # Creazione sicura della cartella e salvataggio
+
     percorso_plot = Path('Plots/times.png')
     percorso_plot.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(percorso_plot, dpi=140)

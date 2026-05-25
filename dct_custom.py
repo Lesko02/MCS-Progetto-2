@@ -1,15 +1,5 @@
-"""
-DCT2 e IDCT2
-
-Convenzione di scaling: DCT-II ortonormale:
-    alpha_0   = 1/sqrt(N)
-    alpha_k   = sqrt(2/N)   per k > 0
-La matrice D e' ortogonale ==> IDCT = D^T (trasposta = inversa).
-"""
 import numpy as np
 
-
-# Compute D
 def compute_D(N):
     """
     Costruisce la matrice D (N x N) della DCT-II ortonormale.
@@ -29,8 +19,6 @@ def compute_D(N):
     D = alpha.reshape(N, 1) * np.cos(k * np.pi * (2 * i + 1) / (2 * N))
     return D
 
-
-# DCT 1-dimensionale
 def dct_1D(f_vect):
     """DCT-II ortonormale di un vettore (fatta in casa: c = D * f)."""
     f_vect = np.asarray(f_vect, dtype=float).reshape(-1)
@@ -38,8 +26,6 @@ def dct_1D(f_vect):
     D = compute_D(N)
     return D @ f_vect
 
-
-# IDCT
 def idct_1D(c_vect):
     """IDCT-II ortonormale di un vettore (f = D^T * c)."""
     c_vect = np.asarray(c_vect, dtype=float).reshape(-1)
@@ -47,7 +33,6 @@ def idct_1D(c_vect):
     D = compute_D(N)
     return D.T @ c_vect
 
-# DCT 2-Dimensionale
 def dct_2D(f_mat):
     """
     DCT2: prima per colonne, poi per righe (come nelle
@@ -67,8 +52,6 @@ def dct_2D(f_mat):
         c_mat[i, :] = D @ c_mat[i, :]
     return c_mat
 
-
-# IDCT 2-Dimensionale
 def idct_2D(c_mat):
     """IDCT2 'fatta in casa': D^T sulle colonne e poi sulle righe."""
     c_mat = np.asarray(c_mat, dtype=float)

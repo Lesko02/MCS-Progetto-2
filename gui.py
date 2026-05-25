@@ -1,14 +1,3 @@
-"""
-GUI tkinter per il programma di compressione tipo JPEG (Parte 2).
-
-L'utente puo':
-    - scegliere un file .bmp dal filesystem;
-    - impostare i parametri F (lato del macro-blocco) e d (soglia di taglio);
-    - eseguire la compressione e visualizzare affiancate originale e compressa.
-
-Salvataggio opzionale dell'immagine compressa in .bmp.
-"""
-
 import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -19,7 +8,6 @@ from PIL import Image, ImageTk
 from compressione import compress_image, load_bmp_grayscale
 
 
-# ----- limite massimo di visualizzazione per non far esplodere la finestra ----
 MAX_DISPLAY_SIDE = 480
 
 
@@ -39,11 +27,10 @@ class DCTApp(tk.Tk):
         self.geometry("1100x720")
         self.minsize(900, 600)
 
-        self.img_array = None          # ndarray uint8 originale
+        self.img_array = None
         self.img_path = None
-        self.img_compressed = None     # ndarray uint8 risultato
+        self.img_compressed = None  
 
-        # Variabili tk
         self.F_var = tk.IntVar(value=8)
         self.d_var = tk.IntVar(value=8)
         self.path_var = tk.StringVar(value="(nessuna immagine caricata)")
@@ -51,7 +38,6 @@ class DCTApp(tk.Tk):
 
         self._build_ui()
 
-    # ----------------------------------------------------------------- UI ----
     def _build_ui(self):
         pad = {'padx': 8, 'pady': 6}
 
@@ -63,7 +49,6 @@ class DCTApp(tk.Tk):
         ttk.Label(top, textvariable=self.path_var, foreground='#444').pack(
             side=tk.LEFT, **pad)
 
-        # ---- parametri F e d ----
         params = ttk.LabelFrame(self, text="Parametri di compressione")
         params.pack(side=tk.TOP, fill=tk.X, padx=8, pady=4)
 
@@ -89,7 +74,6 @@ class DCTApp(tk.Tk):
                   foreground='#0a4', font=('TkDefaultFont', 10, 'italic')).pack(
             side=tk.TOP, fill=tk.X, padx=12)
 
-        # ---- area immagini ----
         body = ttk.Frame(self)
         body.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=8, pady=8)
 
@@ -105,7 +89,6 @@ class DCTApp(tk.Tk):
 
         self._update_d_bounds()
 
-    # ------------------------------------------------------------- helpers ---
     def _update_d_bounds(self):
         F = self.F_var.get()
         dmax = max(0, 2 * F - 2)
@@ -114,7 +97,6 @@ class DCTApp(tk.Tk):
             self.d_var.set(dmax)
 
     def _on_F_change(self):
-        # callback dello spinbox di F: aggiorna i bounds di d
         try:
             self._update_d_bounds()
         except Exception:
@@ -124,9 +106,8 @@ class DCTApp(tk.Tk):
         pil = fit_to_thumbnail(arr)
         ph = ImageTk.PhotoImage(pil)
         target.configure(image=ph)
-        target.image = ph   # impedisce al GC di buttarlo via
+        target.image = ph  
 
-    # ------------------------------------------------------------ commands ---
     def on_choose_file(self):
         path = filedialog.askopenfilename(
             title="Scegli un'immagine .bmp in toni di grigio",
@@ -181,7 +162,7 @@ class DCTApp(tk.Tk):
 
         self.img_compressed = out
         Hc, Wc = out.shape
-        # MSE/PSNR sulla zona effettivamente trattata
+
         orig_crop = self.img_array[:Hc, :Wc].astype(np.float64)
         diff = orig_crop - out.astype(np.float64)
         mse = float(np.mean(diff * diff))
